@@ -1,14 +1,20 @@
 // very incomplete (need to figure out how I am going to go about this)
 // perhaps have a list of links to each badge and select based on what the variable stores
 const generateBadge = license => {
-    if (!license) {
+    let badge = '';
+    
+    if (license === 'none') {
         return '';
+    } else if (license === 'GPL-2.0-or-later') {
+        badge = '![badmath](https://img.shields.io/badge/License-GPL--2.0--or--later-green)'
+    } else if (license === 'GPL-3.0-or-later') {
+        badge = '![badmath](https://img.shields.io/badge/License-GPL--3.0--or--later-green)'
+    } else {
+        badge = '![badmath](https://img.shields.io/badge/License-'+ license +'-green)'
     }
 
     return `
-    ----badge here----
-    
-
+${badge}
     `;
 };
 // very incomplete
@@ -19,29 +25,29 @@ const generateTableOfContents = (templateData) => {
 
     if (templateData.description !== '') {
         tableOfContents += `
-    * [Description](#description)`};
+* [Description](#description)`};
     if (templateData.installation !== '') {
         tableOfContents += `
-    * [Installation](#installation)`};
+* [Installation](#installation)`};
     if (templateData.usage !== '') {
         tableOfContents += `
-    * [Usage](#usage)`};
+* [Usage](#usage)`};
     if (templateData.contributing !== '') {
         tableOfContents += `
-    * [Contributing](#contributing)`};
+* [Contributing](#contributing)`};
     if (templateData.tests !== '') {
         tableOfContents += `
-    * [Tests](#tests)`};
+* [Tests](#tests)`};
     if (templateData.license !== '') {
         tableOfContents += `
-    * [License](#license)`};
+* [License](#license)`};
     if (templateData.collaborators !== '') {
         tableOfContents += `
-    * [Collaborators](#collaborators)`};
+* [Collaborators](#collaborators)`};
 
 
     return `
-    ## Table of Contents 
+## Table of Contents 
 
     ${tableOfContents}
     
@@ -54,7 +60,7 @@ const generateInstallation = installation => {
     }
 
     return `
-    ## Installation
+## Installation
 
     ${installation}
     
@@ -68,7 +74,7 @@ const generateContribute = contributing => {
     }
 
     return `
-    ## Contributing
+## Contributing
 
     ${contributing}
     
@@ -82,7 +88,7 @@ const generateTests = tests => {
     }
 
     return `
-    ## Tests
+## Tests
 
     ${tests}
 
@@ -96,7 +102,7 @@ const generateLicense = license => {
     }
 
     return `
-    ## License
+## License
     
     ${license}
     
@@ -111,12 +117,11 @@ const generateCollaborators = collaborators => {
     }
 
     return `
-    ## Contributers
+## Contributers
     ${collaborators
         .map(({ name, github }) => {
             return `
-        * ${name}
-        [${github}](${github})
+* ${name} - [${github}](${github})
 
         `;
         })
@@ -144,25 +149,26 @@ module.exports = templateData => {
     const { projectTitle, description, installation, usage, contributing, tests, license, collaborators } = templateData;
 
     return `
-    # ${projectTitle}
+# ${projectTitle}
 
-    ## Description 
+${generateBadge(license)}
+
+## Description 
 
     ${description}
 
 
-    ${generateBadge(license)}
-    ${generateTableOfContents(templateData)}
-    ${generateInstallation(installation)}
-    ## Usage 
+${generateTableOfContents(templateData)}
+${generateInstallation(installation)}
+## Usage 
 
     ${usage}
 
 
-    ${generateContribute(contributing)}
-    ${generateTests(tests)}
-    ${generateCollaborators(collaborators)}
-    ${generateLicense(license)}
+${generateContribute(contributing)}
+${generateTests(tests)}
+${generateCollaborators(collaborators)}
+${generateLicense(license)}
 
     `;
 
