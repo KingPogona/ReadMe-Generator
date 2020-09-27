@@ -12,15 +12,16 @@
 
     
     
-    
     ## Table of Contents 
 
+    
+    * [Description](#description)
     * [Installation](#installation)
     * [Usage](#usage)
-    * [Credits](#credits)
+    * [Contributing](#contributing)
+    * [Tests](#tests)
     * [License](#license)
-    
-
+    * [Collaborators](#collaborators)
     
     
     
@@ -30,11 +31,9 @@
     
 
     
-    
     ## Usage 
 
     y
-
 
 
     
@@ -45,27 +44,38 @@
 
     
     
+    ## Tests
+
+    y
+
+    
     
     
     ## Contributers
-
     
-                * name1
-                    name1.url
+        * y
+        [y](y)
 
         
-                * name2
-                    name2.url
+        * y
+        [yy](yy)
 
         
-      
+        * y
+        [y](y)
+
+        
+        * y
+        [y](y)
+
+        
+    
     
     ## License
     
     MIT
     
 
-    
     
 
     

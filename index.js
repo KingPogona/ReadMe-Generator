@@ -116,6 +116,26 @@ const questions = () => {
         },
         {
             type: 'input',
+            name: 'tests',
+            message: 'Provide some instructions and/or examples on how to run tests for this project.',
+            when: ({ confirmTests }) => {
+                if (confirmTests) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            // validate: nameInput => {
+            //     if (nameInput) {
+            //         return true;
+            //     } else {
+            //         console.log('Please provide instructions or guidelines on how you would like others to contribute to this project!');
+            //         return false;
+            //     }
+            // }
+        },
+        {
+            type: 'input',
             name: 'contributing',
             message: 'Please provide instructions and/or examples on how to run tests for your project. (Required)',
             when: ({ confirmTests }) => {

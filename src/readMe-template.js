@@ -9,25 +9,41 @@ const generateBadge = license => {
     ----badge here----
     
 
-    
     `;
 };
 // very incomplete
 // figure out a way of checking which items need to be included
-const generateTableOfContents = installation => {
-    if (!installation) {
-        return '';
-    }
-    
+const generateTableOfContents = (templateData) => {
+
+    let tableOfContents = '';
+
+    if (templateData.description !== '') {
+        tableOfContents += `
+    * [Description](#description)`};
+    if (templateData.installation !== '') {
+        tableOfContents += `
+    * [Installation](#installation)`};
+    if (templateData.usage !== '') {
+        tableOfContents += `
+    * [Usage](#usage)`};
+    if (templateData.contributing !== '') {
+        tableOfContents += `
+    * [Contributing](#contributing)`};
+    if (templateData.tests !== '') {
+        tableOfContents += `
+    * [Tests](#tests)`};
+    if (templateData.license !== '') {
+        tableOfContents += `
+    * [License](#license)`};
+    if (templateData.collaborators !== '') {
+        tableOfContents += `
+    * [Collaborators](#collaborators)`};
+
+
     return `
     ## Table of Contents 
 
-    * [Installation](#installation)
-    * [Usage](#usage)
-    * [Credits](#credits)
-    * [License](#license)
-    
-
+    ${tableOfContents}
     
     `;
 };
@@ -43,7 +59,6 @@ const generateInstallation = installation => {
     ${installation}
     
 
-    
     `;
 };
 // incomplete
@@ -58,7 +73,6 @@ const generateContribute = contributing => {
     ${contributing}
     
 
-    
     `;
 };
 // incomplete
@@ -71,7 +85,6 @@ const generateTests = tests => {
     ## Tests
 
     ${tests}
-    
 
     
     `;
@@ -88,7 +101,6 @@ const generateLicense = license => {
     ${license}
     
 
-    
     `;
 };
 // seriously incomplete... This will need to generate a name 
@@ -100,17 +112,16 @@ const generateCollaborators = collaborators => {
 
     return `
     ## Contributers
-
     ${collaborators
-            .map(({ name, github }) => {
-                return `
-                * ${name}
-                [${github}](${github})
+        .map(({ name, github }) => {
+            return `
+        * ${name}
+        [${github}](${github})
 
         `;
-            })
-            .join('')}
-      `;
+        })
+        .join('')}
+    `;
 };
 
 
@@ -141,12 +152,11 @@ module.exports = templateData => {
 
 
     ${generateBadge(license)}
-    ${generateTableOfContents(installation)}
+    ${generateTableOfContents(templateData)}
     ${generateInstallation(installation)}
     ## Usage 
 
     ${usage}
-
 
 
     ${generateContribute(contributing)}
