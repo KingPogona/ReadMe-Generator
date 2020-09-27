@@ -41,7 +41,7 @@ const generateTableOfContents = (templateData) => {
     if (templateData.license !== '') {
         tableOfContents += `
 * [License](#license)`};
-    if (templateData.collaborators !== '') {
+    if (templateData.userName !== '') {
         tableOfContents += `
 * [Collaborators](#collaborators)`};
 
@@ -111,18 +111,25 @@ const generateLicense = license => {
 };
 // seriously incomplete... This will need to generate a name 
 // and github link for each Collaborators in the list.
-const generateCollaborators = collaborators => {
-    if (!collaborators) {
-        return '';
-    }
+const generateCollaborators = (userName, userGitHub, collaborators) => {
+    if (collaborators[0].confirmCollaborators === false ) {
+        return `
+## Contributers
+
+* ${userName} - [${userGitHub}](${userGitHub})
+
+
+`
+    };
 
     return `
 ## Contributers
+
+* ${userName} - [${userGitHub}](${userGitHub})
     ${collaborators
         .map(({ name, github }) => {
             return `
 * ${name} - [${github}](${github})
-
         `;
         })
         .join('')}
@@ -146,7 +153,7 @@ const generateCollaborators = collaborators => {
 module.exports = templateData => {
     console.log(templateData);
     // destructure page data by section
-    const { projectTitle, description, installation, usage, contributing, tests, license, collaborators } = templateData;
+    const { userName, userGitHub, projectTitle, description, installation, usage, contributing, tests, license, collaborators } = templateData;
 
     return `
 # ${projectTitle}
@@ -167,7 +174,7 @@ ${generateInstallation(installation)}
 
 ${generateContribute(contributing)}
 ${generateTests(tests)}
-${generateCollaborators(collaborators)}
+${generateCollaborators(userName, userGitHub, collaborators)}
 ${generateLicense(license)}
 
     `;

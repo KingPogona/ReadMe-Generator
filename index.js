@@ -11,6 +11,32 @@ const questions = () => {
     return inquirer.prompt([
         {
             type: 'input',
+            name: 'userName',
+            message: 'What is your GitHub user name? (Required)',
+            validate: verifyInput => {
+                if (verifyInput) {
+                    return true;
+                } else {
+                    console.log('Please enter your GitHub user name!');
+                    return false;
+                }
+            }
+        },
+        {
+            type: 'input',
+            name: 'userGitHub',
+            message: 'What is your GitHub URL? (Required)',
+            validate: verifyInput => {
+                if (verifyInput) {
+                    return true;
+                } else {
+                    console.log('Please enter your GitHub URL!');
+                    return false;
+                }
+            }
+        },
+        {
+            type: 'input',
             name: 'projectTitle',
             message: 'What is the project title? (Required)',
             validate: verifyInput => {
@@ -214,9 +240,22 @@ const promptCollaborators = collaboratorData => {
 
     return inquirer.prompt([
         {
+            type: 'confirm',
+            name: 'confirmCollaborators',
+            message: 'Do you want to include any collaborators?',
+            default: true
+        },
+        {
             type: 'input',
             name: 'name',
             message: 'What is the name of a collaborator (Required)',
+            when: ({ confirmCollaborators }) => {
+                if (confirmCollaborators) {
+                    return true;
+                } else {
+                    return false;
+                }
+            },
             validate: nameInput => {
                 if (nameInput) {
                     return true;
@@ -230,6 +269,13 @@ const promptCollaborators = collaboratorData => {
             type: 'input',
             name: 'github',
             message: "Provide a url for the collaborator's GitHub profile. (Required)",
+            when: ({ confirmCollaborators }) => {
+                if (confirmCollaborators) {
+                    return true;
+                } else {
+                    return false;
+                }
+            },
             validate: nameInput => {
                 if (nameInput) {
                     return true;
@@ -249,7 +295,14 @@ const promptCollaborators = collaboratorData => {
             type: 'confirm',
             name: 'confirmAddCollaborator',
             message: 'Would you like to add another collaborator? (Y,N)',
-            default: false
+            default: false,
+            when: ({ confirmCollaborators }) => {
+                if (confirmCollaborators) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
         }
 
     ])
