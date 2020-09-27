@@ -134,7 +134,7 @@ const questions = () => {
             //     }
             // }
         },
-        
+
         // Review this to make sure it is good enough
         {
             type: 'list',
@@ -173,12 +173,85 @@ const writeToFile = fileContent => {
 };
 
 
+const promptCollaborators = collaboratorData => {
+    // console.log(collaboratorData);
+    console.log(`
+  ======================
+  Add a New Collaborator
+  ======================
+  `);
+
+    // If there's no 'collaborators' array property, create one
+    // if (typeof collaboratorData === 'undefined') {
+    //     var collaboratorData = { collaborators: [] };
+    // }
+    console.log(collaboratorData);
+    // If there's no 'collaborators' array property, create one
+    if (!collaboratorData.collaborators) {
+        collaboratorData.collaborators = [];
+    }
+    console.log(collaboratorData);
+
+    return inquirer.prompt([
+        {
+            type: 'input',
+            name: 'name',
+            message: 'What is the name of a collaborator (Required)',
+            validate: nameInput => {
+                if (nameInput) {
+                    return true;
+                } else {
+                    console.log('Please enter a collaborators name!');
+                    return false;
+                }
+            }
+        },
+        {
+            type: 'input',
+            name: 'github',
+            message: "Provide a url for the collaborator's GitHub profile. (Required)",
+            validate: nameInput => {
+                if (nameInput) {
+                    return true;
+                } else {
+                    console.log("Please enter the url for the collaborator's GitHub Profile!");
+                    return false;
+                }
+            }
+        },
+        // {
+        //     type: 'checkbox',
+        //     name: 'languages',
+        //     message: 'What did you this project with? (Check all that apply)',
+        //     choices: ['JavaScript', 'HTML', 'CSS', 'ES6', 'jQuery', 'Bootstrap', 'Node']
+        // },
+        {
+            type: 'confirm',
+            name: 'confirmAddCollaborator',
+            message: 'Would you like to add another collaborator? (Y,N)',
+            default: false
+        }
+
+    ])
+        .then(projectData => {
+            collaboratorData.collaborators.push(projectData);
+            if (projectData.confirmAddCollaborator) {
+                return promptCollaborators(collaboratorData);
+            } else {
+                console.log(collaboratorData);
+                return collaboratorData;
+            }
+        });
+};
+
+
 
 // function to initialize program
 function init() {
     questions()
-        .then(answers => {
-            return generateReadMe(answers);
+        .then(promptCollaborators)
+        .then(collaboratorData => {
+            return generateReadMe(collaboratorData);
         })
         .then(readMeContent => {
             console.log(readMeContent);
@@ -190,10 +263,7 @@ function init() {
         .catch(err => {
             console.log(err);
         });
-    // .then(promptCollaborators)
-    // .then(collaboratorData => {
-    //     console.log(collaboratorData)
-    // });
+
 };
 
 
