@@ -112,7 +112,7 @@ const generateLicense = license => {
 // seriously incomplete... This will need to generate a name 
 // and github link for each Collaborators in the list.
 const generateCollaborators = (userName, userGitHub, collaborators) => {
-    if (collaborators[0].confirmCollaborators === false ) {
+    if (collaborators === []) {
         return `
 ## Contributers
 

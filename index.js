@@ -188,6 +188,12 @@ const questions = () => {
             // redo message
             message: 'What kind of license does your project use? (Check one that applies)',
             choices: ['MIT', 'GPL-2.0-or-later', 'GPL-3.0-or-later', 'Apache-2.0', 'none']
+        },
+        {
+            type: 'confirm',
+            name: 'confirmCollaborators',
+            message: 'Do you want to include any collaborators?',
+            default: true
         }
     ]);
 };
@@ -220,42 +226,28 @@ const writeToFile = fileContent => {
 
 
 const promptCollaborators = collaboratorData => {
-    // console.log(collaboratorData);
+    // If there's no 'collaborators' array property, create one
+    if (!collaboratorData.collaborators) {
+        collaboratorData.collaborators = [];
+    };
+    console.log(collaboratorData);
+
+    // check if there should be any collaborators
+    if (collaboratorData.confirmCollaborators === false) {
+        return collaboratorData
+    };
+
     console.log(`
   ======================
   Add a New Collaborator
   ======================
   `);
 
-    // If there's no 'collaborators' array property, create one
-    // if (typeof collaboratorData === 'undefined') {
-    //     var collaboratorData = { collaborators: [] };
-    // }
-    console.log(collaboratorData);
-    // If there's no 'collaborators' array property, create one
-    if (!collaboratorData.collaborators) {
-        collaboratorData.collaborators = [];
-    }
-    console.log(collaboratorData);
-
     return inquirer.prompt([
-        {
-            type: 'confirm',
-            name: 'confirmCollaborators',
-            message: 'Do you want to include any collaborators?',
-            default: true
-        },
         {
             type: 'input',
             name: 'name',
             message: 'What is the name of a collaborator (Required)',
-            when: ({ confirmCollaborators }) => {
-                if (confirmCollaborators) {
-                    return true;
-                } else {
-                    return false;
-                }
-            },
             validate: nameInput => {
                 if (nameInput) {
                     return true;
@@ -269,13 +261,6 @@ const promptCollaborators = collaboratorData => {
             type: 'input',
             name: 'github',
             message: "Provide a url for the collaborator's GitHub profile. (Required)",
-            when: ({ confirmCollaborators }) => {
-                if (confirmCollaborators) {
-                    return true;
-                } else {
-                    return false;
-                }
-            },
             validate: nameInput => {
                 if (nameInput) {
                     return true;
@@ -296,13 +281,6 @@ const promptCollaborators = collaboratorData => {
             name: 'confirmAddCollaborator',
             message: 'Would you like to add another collaborator? (Y,N)',
             default: false,
-            when: ({ confirmCollaborators }) => {
-                if (confirmCollaborators) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
         }
 
     ])
