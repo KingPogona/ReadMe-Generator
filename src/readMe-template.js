@@ -137,7 +137,7 @@ const generateCredits = (userName, userGitHub, collaborators) => {
 // generates the layout of the ReadMe and exports it for use.
 module.exports = templateData => {
     // destructure page data by section
-    const { userName, userGitHub, projectTitle, description, installation, usage, contributing, tests, license, collaborators } = templateData;
+    const { userName, userGitHub, userEMail, projectTitle, description, installation, usage, contributing, tests, license, collaborators } = templateData;
 
     return `
 # ${projectTitle}
@@ -160,5 +160,10 @@ ${generateContribute(contributing)}
 ${generateTests(tests)}
 ${generateLicense(license)}
 ${generateCredits(userName, userGitHub, collaborators)}
+
+
+## Questions
+
+If you have any questions please feel free to contact me at ${userEMail}.
     `;
 };
