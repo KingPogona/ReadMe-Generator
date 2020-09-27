@@ -1,6 +1,6 @@
 // include required local .js files
 const { writeFile, copyFile } = require('./utils/generate-readMe.js');
-const generatePage = require('./src/readMe-template.js');
+const generateReadMe = require('./src/readMe-template.js');
 
 // include inquirer in the project
 const inquirer = require('inquirer');
@@ -13,8 +13,8 @@ const questions = () => {
             type: 'input',
             name: 'projectTitle',
             message: 'What is the project title? (Required)',
-            validate: nameInput => {
-                if (nameInput) {
+            validate: verifyInput => {
+                if (verifyInput) {
                     return true;
                 } else {
                     console.log('Please enter the project title!');
@@ -26,8 +26,8 @@ const questions = () => {
             type: 'input',
             name: 'description',
             message: 'Please write a description of your project. (Required)',
-            validate: nameInput => {
-                if (nameInput) {
+            validate: verifyInput => {
+                if (verifyInput) {
                     return true;
                 } else {
                     console.log('Please write a description of your project!');
@@ -67,8 +67,8 @@ const questions = () => {
             type: 'input',
             name: 'usage',
             message: 'Please provide instructions for use. (Required)',
-            validate: nameInput => {
-                if (nameInput) {
+            validate: verifyInput => {
+                if (verifyInput) {
                     return true;
                 } else {
                     console.log('Please provide instructions for use!');
@@ -109,28 +109,39 @@ const questions = () => {
         // I have no idea for this one I think i would also like this to be optional.
         // try: "Does your project include tests? If so, would you like to provide instructions and/or examples on how to run them?"
         {
+            type: 'confirm',
+            name: 'confirmTests',
+            message: 'Does your project include tests? If so, would you like to provide instructions and/or examples on how to run them?',
+            default: true
+        },
+        {
             type: 'input',
-            name: 'tests',
+            name: 'contributing',
             message: 'Please provide instructions and/or examples on how to run tests for your project. (Required)',
-            validate: nameInput => {
-                if (nameInput) {
+            when: ({ confirmTests }) => {
+                if (confirmTests) {
                     return true;
                 } else {
-                    console.log('Please provide instructions and/or examples on how to run tests for your project.');
                     return false;
                 }
             }
+            // validate: nameInput => {
+            //     if (nameInput) {
+            //         return true;
+            //     } else {
+            //         console.log('Please provide instructions and/or examples on how to run tests for your project.');
+            //         return false;
+            //     }
+            // }
         },
-
-        // this is not done. fix message and add more license types.
+        
+        // Review this to make sure it is good enough
         {
             type: 'list',
-            // is there a type that only allows 1 checked option?
             name: 'license',
             // redo message
             message: 'What kind of license does your project use? (Check one that applies)',
-            // provide better list of license types
-            choices: ['MIT', 'none']
+            choices: ['MIT', 'GPL-2.0-or-later', 'GPL-3.0-or-later', 'Apache-2.0', 'none']
         }
     ]);
 };
@@ -140,20 +151,49 @@ const questions = () => {
 
 
 // function to write README file
-function writeToFile(fileName, data) {
-}
+const writeToFile = fileContent => {
+    const fs = require('fs');
+
+    return new Promise((resolve, reject) => {
+        fs.writeFile('./README.md', fileContent, err => {
+            // if there's an error, reject the Promise and send the error to the Promise's `.catch()` method
+            if (err) {
+                reject(err);
+                // return out of the function here to make sure the Promise doesn't accidentally execute the resolve() function as well
+                return;
+            }
+
+            // if everything went well, resolve the Promise and send the successful data to the `.then()` method
+            resolve({
+                ok: true,
+                message: 'File created!'
+            });
+        });
+    });
+};
+
 
 
 // function to initialize program
 function init() {
     questions()
         .then(answers => {
-            console.log(answers)
+            return generateReadMe(answers);
         })
-        // .then(promptCollaborators)
-        // .then(collaboratorData => {
-        //     console.log(collaboratorData)
-        // });
+        .then(readMeContent => {
+            console.log(readMeContent);
+            return writeToFile(readMeContent);
+        })
+        .then(writeFileResponse => {
+            console.log(writeFileResponse);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    // .then(promptCollaborators)
+    // .then(collaboratorData => {
+    //     console.log(collaboratorData)
+    // });
 };
 
 
