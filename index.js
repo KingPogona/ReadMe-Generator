@@ -1,3 +1,6 @@
+// include "fs"
+const fs = require('fs');
+
 // include required local .js files
 const { writeFile, copyFile } = require('./utils/generate-readMe.js');
 const generateReadMe = require('./src/readMe-template.js');
@@ -6,13 +9,13 @@ const generateReadMe = require('./src/readMe-template.js');
 const inquirer = require('inquirer');
 
 
-// get user info
+// get user info and information to fill out readme
 const questions = () => {
     return inquirer.prompt([
         {
             type: 'input',
             name: 'userName',
-            message: 'What is your GitHub user name? (Required)',
+            message: 'What is your GitHub user name?',
             validate: verifyInput => {
                 if (verifyInput) {
                     return true;
@@ -25,7 +28,7 @@ const questions = () => {
         {
             type: 'input',
             name: 'userGitHub',
-            message: 'What is your GitHub URL? (Required)',
+            message: 'What is your GitHub URL?',
             validate: verifyInput => {
                 if (verifyInput) {
                     return true;
@@ -38,7 +41,7 @@ const questions = () => {
         {
             type: 'input',
             name: 'projectTitle',
-            message: 'What is the project title? (Required)',
+            message: 'What is the project title?',
             validate: verifyInput => {
                 if (verifyInput) {
                     return true;
@@ -51,7 +54,7 @@ const questions = () => {
         {
             type: 'input',
             name: 'description',
-            message: 'Please write a description of your project. (Required)',
+            message: 'Please write a description of your project.',
             validate: verifyInput => {
                 if (verifyInput) {
                     return true;
@@ -64,76 +67,68 @@ const questions = () => {
         {
             type: 'confirm',
             name: 'confirmInstallation',
-            message: 'Is installation needed to use/work on this project? (Y,N)',
+            message: 'Is installation needed to use/work on this project?',
             default: true
         },
-        // combine validation with the when if possible
         {
             type: 'input',
             name: 'installation',
-            message: 'Please provide written installation instructions. (Required)',
+            message: 'Please provide written installation instructions.',
             when: ({ confirmInstallation }) => {
                 if (confirmInstallation) {
                     return true;
                 } else {
                     return false;
                 }
-            }
-            // validate: nameInput => {
-            //     if (nameInput) {
-            //         return true;
-            //     } else {
-            //         console.log('Please provide written installation instructions!');
-            //         return false;
-            //     }
-            // }
-        },
-        // usage instructions
-        {
-            type: 'input',
-            name: 'usage',
-            message: 'Please provide instructions for use. (Required)',
+            },
             validate: verifyInput => {
                 if (verifyInput) {
                     return true;
                 } else {
-                    console.log('Please provide instructions for use!');
+                    console.log('Please provide written installation instructions!');
                     return false;
                 }
             }
         },
-        // how to contribute
-        // add an if to the effect of: "Would you like to provide guidelines for how others can help contribute to this project?"
+        {
+            type: 'input',
+            name: 'usage',
+            message: 'Please provide instructions for how to use this project!',
+            validate: verifyInput => {
+                if (verifyInput) {
+                    return true;
+                } else {
+                    console.log('Please provide instructions for how to use this project!');
+                    return false;
+                }
+            }
+        },
         {
             type: 'confirm',
             name: 'confirmContribute',
-            message: 'Do you intend to have others help contribute to this project? (Y,N)',
+            message: 'Do you intend to have others help contribute to this project?',
             default: true
         },
         {
             type: 'input',
             name: 'contributing',
             message: 'Provide some instructions/guidelines for how you would like others to contribute to this project:',
-            // possible alt text: What instructions/guidelines would you like to provide for others on how to contribute to this project? (Required)
             when: ({ confirmContribute }) => {
                 if (confirmContribute) {
                     return true;
                 } else {
                     return false;
                 }
+            },
+            validate: verifyInput => {
+                if (verifyInput) {
+                    return true;
+                } else {
+                    console.log('Please provide instructions or guidelines on how you would like others to contribute to this project!');
+                    return false;
+                }
             }
-            // validate: nameInput => {
-            //     if (nameInput) {
-            //         return true;
-            //     } else {
-            //         console.log('Please provide instructions or guidelines on how you would like others to contribute to this project!');
-            //         return false;
-            //     }
-            // }
         },
-        // how to Test
-        // I have no idea for this one I think i would also like this to be optional.
-        // try: "Does your project include tests? If so, would you like to provide instructions and/or examples on how to run them?"
         {
             type: 'confirm',
             name: 'confirmTests',
@@ -143,71 +138,106 @@ const questions = () => {
         {
             type: 'input',
             name: 'tests',
-            message: 'Provide some instructions and/or examples on how to run tests for this project.',
+            message: 'Provide some instructions and/or examples for how to run tests for this project.',
             when: ({ confirmTests }) => {
                 if (confirmTests) {
                     return true;
                 } else {
                     return false;
                 }
-            }
-            // validate: nameInput => {
-            //     if (nameInput) {
-            //         return true;
-            //     } else {
-            //         console.log('Please provide instructions or guidelines on how you would like others to contribute to this project!');
-            //         return false;
-            //     }
-            // }
-        },
-        {
-            type: 'input',
-            name: 'contributing',
-            message: 'Please provide instructions and/or examples on how to run tests for your project. (Required)',
-            when: ({ confirmTests }) => {
-                if (confirmTests) {
+            },
+            validate: verifyInput => {
+                if (verifyInput) {
                     return true;
                 } else {
+                    console.log('Please provide instructions and/or examples for how to run tests for this project.!');
                     return false;
                 }
             }
-            // validate: nameInput => {
-            //     if (nameInput) {
-            //         return true;
-            //     } else {
-            //         console.log('Please provide instructions and/or examples on how to run tests for your project.');
-            //         return false;
-            //     }
-            // }
         },
-
-        // Review this to make sure it is good enough
         {
             type: 'list',
             name: 'license',
-            // redo message
             message: 'What kind of license does your project use? (Check one that applies)',
             choices: ['MIT', 'GPL-2.0-or-later', 'GPL-3.0-or-later', 'Apache-2.0', 'none']
         },
         {
             type: 'confirm',
             name: 'confirmCollaborators',
-            message: 'Do you want to include any collaborators?',
+            message: 'Did anyone collaborate on this project?',
             default: true
         }
     ]);
 };
 
 
+const promptCollaborators = collaboratorData => {
+    // If there is no 'collaborators' array property, create one
+    if (!collaboratorData.collaborators) {
+        collaboratorData.collaborators = [];
+    };
 
+    // check if there should be any collaborators
+    if (collaboratorData.confirmCollaborators === false) {
+        return collaboratorData
+    };
+
+    console.log(`
+  ======================
+  Add a New Collaborator
+  ======================
+  `);
+
+    return inquirer.prompt([
+        {
+            type: 'input',
+            name: 'name',
+            message: 'What is the name of a collaborator',
+            validate: verifyInput => {
+                if (verifyInput) {
+                    return true;
+                } else {
+                    console.log('Please enter a collaborators name!');
+                    return false;
+                }
+            }
+        },
+        {
+            type: 'input',
+            name: 'github',
+            message: "Provide a url for the collaborator's GitHub profile.",
+            validate: verifyInput => {
+                if (verifyInput) {
+                    return true;
+                } else {
+                    console.log("Please enter the url for the collaborator's GitHub Profile!");
+                    return false;
+                }
+            }
+        },
+        {
+            type: 'confirm',
+            name: 'confirmAddCollaborator',
+            message: 'Would you like to add another collaborator?',
+            default: false,
+        }
+
+    ])
+        .then(projectData => {
+            collaboratorData.collaborators.push(projectData);
+            if (projectData.confirmAddCollaborator) {
+                return promptCollaborators(collaboratorData);
+            } else {
+                return collaboratorData;
+            }
+        });
+};
 
 
 // function to write README file
 const writeToFile = fileContent => {
-    const fs = require('fs');
-
     return new Promise((resolve, reject) => {
-        fs.writeFile('./README.md', fileContent, err => {
+        fs.writeFile('./dist/README.md', fileContent, err => {
             // if there's an error, reject the Promise and send the error to the Promise's `.catch()` method
             if (err) {
                 reject(err);
@@ -225,78 +255,6 @@ const writeToFile = fileContent => {
 };
 
 
-const promptCollaborators = collaboratorData => {
-    // If there's no 'collaborators' array property, create one
-    if (!collaboratorData.collaborators) {
-        collaboratorData.collaborators = [];
-    };
-    console.log(collaboratorData);
-
-    // check if there should be any collaborators
-    if (collaboratorData.confirmCollaborators === false) {
-        return collaboratorData
-    };
-
-    console.log(`
-  ======================
-  Add a New Collaborator
-  ======================
-  `);
-
-    return inquirer.prompt([
-        {
-            type: 'input',
-            name: 'name',
-            message: 'What is the name of a collaborator (Required)',
-            validate: nameInput => {
-                if (nameInput) {
-                    return true;
-                } else {
-                    console.log('Please enter a collaborators name!');
-                    return false;
-                }
-            }
-        },
-        {
-            type: 'input',
-            name: 'github',
-            message: "Provide a url for the collaborator's GitHub profile. (Required)",
-            validate: nameInput => {
-                if (nameInput) {
-                    return true;
-                } else {
-                    console.log("Please enter the url for the collaborator's GitHub Profile!");
-                    return false;
-                }
-            }
-        },
-        // {
-        //     type: 'checkbox',
-        //     name: 'languages',
-        //     message: 'What did you this project with? (Check all that apply)',
-        //     choices: ['JavaScript', 'HTML', 'CSS', 'ES6', 'jQuery', 'Bootstrap', 'Node']
-        // },
-        {
-            type: 'confirm',
-            name: 'confirmAddCollaborator',
-            message: 'Would you like to add another collaborator? (Y,N)',
-            default: false,
-        }
-
-    ])
-        .then(projectData => {
-            collaboratorData.collaborators.push(projectData);
-            if (projectData.confirmAddCollaborator) {
-                return promptCollaborators(collaboratorData);
-            } else {
-                console.log(collaboratorData);
-                return collaboratorData;
-            }
-        });
-};
-
-
-
 // function to initialize program
 function init() {
     questions()
@@ -305,7 +263,6 @@ function init() {
             return generateReadMe(collaboratorData);
         })
         .then(readMeContent => {
-            console.log(readMeContent);
             return writeToFile(readMeContent);
         })
         .then(writeFileResponse => {

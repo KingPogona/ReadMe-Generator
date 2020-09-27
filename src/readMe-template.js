@@ -1,5 +1,4 @@
-// very incomplete (need to figure out how I am going to go about this)
-// perhaps have a list of links to each badge and select based on what the variable stores
+// Generates a badge for the license used by this project
 const generateBadge = license => {
     let badge = '';
     
@@ -17,8 +16,7 @@ const generateBadge = license => {
 ${badge}
     `;
 };
-// very incomplete
-// figure out a way of checking which items need to be included
+// Generates the Table of Contents based on the included sections
 const generateTableOfContents = (templateData) => {
 
     let tableOfContents = '';
@@ -43,17 +41,17 @@ const generateTableOfContents = (templateData) => {
 * [License](#license)`};
     if (templateData.userName !== '') {
         tableOfContents += `
-* [Collaborators](#collaborators)`};
+* [Credits](#credits)`};
 
 
     return `
 ## Table of Contents 
 
-    ${tableOfContents}
+${tableOfContents}
     
     `;
 };
-// incomplete
+// Generates installation instructions based on user input.
 const generateInstallation = installation => {
     if (!installation) {
         return '';
@@ -62,12 +60,12 @@ const generateInstallation = installation => {
     return `
 ## Installation
 
-    ${installation}
+${installation}
     
 
     `;
 };
-// incomplete
+// Generates instructions on how to contribute based on user input.
 const generateContribute = contributing => {
     if (!contributing) {
         return '';
@@ -76,12 +74,12 @@ const generateContribute = contributing => {
     return `
 ## Contributing
 
-    ${contributing}
+${contributing}
     
 
     `;
 };
-// incomplete
+// Generates test instructions based on user input.
 const generateTests = tests => {
     if (!tests) {
         return '';
@@ -90,12 +88,12 @@ const generateTests = tests => {
     return `
 ## Tests
 
-    ${tests}
+${tests}
 
     
     `;
 };
-// incomplete
+// Generates license info based on user input.
 const generateLicense = license => {
     if (!license) {
         return '';
@@ -104,17 +102,16 @@ const generateLicense = license => {
     return `
 ## License
     
-    ${license}
+${license}
     
 
     `;
 };
-// seriously incomplete... This will need to generate a name 
-// and github link for each Collaborators in the list.
-const generateCollaborators = (userName, userGitHub, collaborators) => {
+// Generates Credits including all provided collaborators on the project based on user input.
+const generateCredits = (userName, userGitHub, collaborators) => {
     if (collaborators === []) {
         return `
-## Contributers
+## Credits
 
 * ${userName} - [${userGitHub}](${userGitHub})
 
@@ -123,7 +120,7 @@ const generateCollaborators = (userName, userGitHub, collaborators) => {
     };
 
     return `
-## Contributers
+## Credits
 
 * ${userName} - [${userGitHub}](${userGitHub})
     ${collaborators
@@ -137,21 +134,8 @@ const generateCollaborators = (userName, userGitHub, collaborators) => {
 };
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+// generates the layout of the ReadMe and exports it for use.
 module.exports = templateData => {
-    console.log(templateData);
     // destructure page data by section
     const { userName, userGitHub, projectTitle, description, installation, usage, contributing, tests, license, collaborators } = templateData;
 
@@ -159,24 +143,22 @@ module.exports = templateData => {
 # ${projectTitle}
 
 ${generateBadge(license)}
+${generateTableOfContents(templateData)}
 
 ## Description 
 
-    ${description}
+${description}
 
 
-${generateTableOfContents(templateData)}
 ${generateInstallation(installation)}
 ## Usage 
 
-    ${usage}
+${usage}
 
 
 ${generateContribute(contributing)}
 ${generateTests(tests)}
-${generateCollaborators(userName, userGitHub, collaborators)}
 ${generateLicense(license)}
-
+${generateCredits(userName, userGitHub, collaborators)}
     `;
-
 };
