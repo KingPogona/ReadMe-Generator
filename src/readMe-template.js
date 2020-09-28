@@ -76,7 +76,6 @@ const generateContribute = contributing => {
 
 ${contributing}
     
-
     `;
 };
 // Generates test instructions based on user input.
@@ -90,7 +89,6 @@ const generateTests = tests => {
 
 ${tests}
 
-    
     `;
 };
 // Generates license info based on user input.
@@ -104,7 +102,6 @@ const generateLicense = license => {
     
 ${license}
     
-
     `;
 };
 // Generates Credits including all provided collaborators on the project based on user input.
@@ -114,7 +111,6 @@ const generateCredits = (userName, userGitHub, collaborators) => {
 ## Credits
 
 * ${userName} - [${userGitHub}](${userGitHub})
-
 
 `
     };
@@ -129,8 +125,7 @@ const generateCredits = (userName, userGitHub, collaborators) => {
 * ${name} - [${github}](${github})
         `;
         })
-        .join('')}
-    `;
+        .join('')}`;
 };
 
 
